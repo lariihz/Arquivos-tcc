@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Lista de Produtos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #D9D9D9; /* Cinza claro */
+      margin: 20px;
+      color: #000000; /* Preto */
+    }
+
+    h2 {
+      color: #003B73; /* Azul vivo */
+      margin-bottom: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #FFFFFF; /* branco para contraste */
+      box-shadow: 0 0 5px #003B73; /* sombra azul escuro */
+    }
+
+    th, td {
+      border: 1px solid #003B73; /* Azul escuro */
+      padding: 12px;
+      text-align: left;
+      color: #000000; /* Preto */
+    }
+
+    th {
+      background-color: #007BFF; /* Azul vivo */
+      color: white;
+    }
+
+    tbody tr:hover {
+      background-color: #A4C2F4; /* Azul claro */
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h2>Produtos em Estoque</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Descrição</th>
+        <th>Quantidade</th>
+        <th>Localização</th>
+      </tr>
+    </thead>
+    <tbody id="tabelaProdutos"></tbody>
+  </table>
+
+  <script>
+    fetch("http://localhost:8080/api/produtos")
+      .then(res => {
+        if (!res.ok) throw new Error('Erro ao carregar produtos');
+        return res.json();
+      })
+      .then(data => {
+        const tabela = document.getElementById("tabelaProdutos");
+        let linhas = "";
+        data.forEach(produto => {
+          linhas += `
+            <tr>
+              <td>${produto.nome}</td>
+              <td>${produto.descricao}</td>
+              <td>${produto.quantidade}</td>
+              <td>${produto.localizacao}</td>
+            </tr>`;
+        });
+        tabela.innerHTML = linhas;
+      })
+      .catch(err => {
+        alert(err.message);
+      });
+  </script>
+</body>
+</html>
