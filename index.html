@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Início - Controle de Estoque</title>
+  <style>
+    /* Paleta combinada das duas imagens */
+    :root {
+      --azul-vivo: #003B73;          /* Azul vivo */
+      --azul-claro: #a6c9ff;         /* Azul claro */
+      --azul-escuro: #004c92;        /* Azul escuro */
+      --cinza-claro: #d0d0d0;        /* Cinza claro */
+      --preto: #1f1f1f;              /* Preto */
+      --branco-acinzentado: #f4f4f4; /* Branco acinzentado */
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: var(--branco-acinzentado);
+      color: var(--preto);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background-color: var(--azul-vivo);
+      padding: 1.2rem 2rem;
+      color: #A4C2F4;
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.8rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      flex-shrink: 0;
+    }
+
+    nav {
+      background-color: var(--cinza-claro);
+      padding: 1rem 2rem;
+      box-shadow: inset 0 -1px 0 rgba(0,0,0,0.1);
+      flex-shrink: 0;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
+      margin: 0;
+      padding: 0;
+      justify-content: center;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: var(--azul-escuro);
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      border: 2px solid transparent;
+    }
+
+    nav a:hover, nav a:focus {
+      background-color: var(--azul-vivo);
+      color: Bright blue;
+      border-color: var(--azul-vivo);
+    }
+
+    main {
+      flex-grow: 1;
+      padding: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+      position: relative;
+      perspective: 1200px;
+    }
+
+    h1 {
+      color: var(--azul-escuro);
+      margin-bottom: 1.5rem;
+    }
+
+    /* Botões estilizados para links */
+    .btn {
+      background-color: var(--azul-vivo);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.6rem;
+      margin: 0.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 6px;
+      font-weight: 700;
+      box-shadow: 0 4px 8px rgba(0,123,255,0.3);
+      transition: background-color 0.25s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn:hover, .btn:focus {
+      background-color: var(--azul-claro);
+      box-shadow: 0 6px 12px rgba(166,201,255,0.6);
+      color: var(--azul-escuro);
+    }
+
+    footer {
+      margin-top: 4rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--cinza-claro);
+      padding-bottom: 2rem;
+      flex-shrink: 0;
+    }
+
+    /* Carousel 3D */
+    .carousel-container {
+      width: 400px;
+      height: 400px;
+      margin: 0 auto;
+      position: relative;
+      transform-style: preserve-3d;
+      animation: spin 60s linear infinite; /* aqui, 60s para girar mais devagar */
+      margin-top: 3rem;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      background: var(--branco-acinzentado);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      perspective: 1200px;
+    }
+
+    .carousel {
+      width: 300px;
+      height: 300px;
+      position: relative;
+      transform-style: preserve-3d;
+      transform-origin: 50% 50% -400px;
+    }
+
+    .carousel img {
+      position: absolute;
+      width: 180px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease;
+      cursor: pointer;
+      border: 3px solid var(--azul-claro);
+      background-color: A4C2F4;
+    }
+
+    /* Posicionamento das imagens em círculo (6 imagens) */
+    .carousel img:nth-child(1) { transform: rotateY(0deg) translateZ(400px); }
+    .carousel img:nth-child(2) { transform: rotateY(60deg) translateZ(400px); }
+    .carousel img:nth-child(3) { transform: rotateY(120deg) translateZ(400px); }
+    .carousel img:nth-child(4) { transform: rotateY(180deg) translateZ(400px); }
+    .carousel img:nth-child(5) { transform: rotateY(240deg) translateZ(400px); }
+    .carousel img:nth-child(6) { transform: rotateY(300deg) translateZ(400px); }
+
+    /* Animação para girar o carrossel */
+    @keyframes spin {
+      from { transform: rotateY(0deg);}
+      to { transform: rotateY(360deg);}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    CONTROLE DE ESTOQUE
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="login.html" class="btn">Login</a></li>
+      <li><a href="cadastro-produto.html" class="btn">Cadastrar Produto</a></li>
+      <li><a href="produtos.html" class="btn">Ver Produtos</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <h1>Bem-vindo ao Mega History</h1>
+    <p>Gerencie seu estoque com facilidade usando esta plataforma intuitiva.</p>
+
+    <div class="carousel-container">
+      <div class="carousel">
+        <img src="https://www.longa.com.br/wp-content/uploads/2021/04/controle-de-estoque-1.jpg" alt="Estoque 1" />
+        <img src="https://delage.com.br/wp-content/uploads/2020/07/acuracidade.jpg.webp" alt="Estoque 2" />
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7c9bqCcwdcjBlPHdh-QSEcegoCWJIrIfQ2sTkT0fXjtdLi2H8-ANPwhobFUbNaLH4I7Y&usqp=CAU" alt="Estoque 3" />
+        <img src="https://facil123.com.br/wp-content/uploads/as-5-melhores-dicas-para-uma-gestao-de-estoque-eficiente.jpg" alt="Estoque 4" />
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSoQV1FAu-tjF5LMp6YLLZdDGPGkwLbkfB9Ng&s" alt="Estoque 5" />
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2Tn0AOBrCHT43URbwx3pxVcJj5VMqjNCG9g&s" alt="Estoque 6" />
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    &copy; 2025 Controle de Estoque - Todos os direitos reservados
+  </footer>
+</body>
+</html>
