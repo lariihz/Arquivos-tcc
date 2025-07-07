@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tela Inicial</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    .header {
+      background: linear-gradient(to right, #007BFF, #A4C2F4);
+      color: white;
+      text-align: center;
+      padding: 25px;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+    }
+
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .button-group button {
+      padding: 18px 0;
+      font-size: 20px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 6px 12px rgba(0, 123, 255, 0.4);
+    }
+
+    .button-group button:hover {
+      background-color: #003B73;
+      transform: scale(1.05);
+      box-shadow: 0 10px 25px rgba(0, 59, 115, 0.6);
+    }
+
+    @media (max-width: 480px) {
+      .button-group button {
+        font-size: 18px;
+        padding: 16px 0;
+      }
+
+      .header {
+        font-size: 24px;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+Relatorios  </div>
+
+  <div class="container">
+    <div class="button-group">
+        
+      <button onclick="location.href='TabelaFornecedores.html'">Relatorios de Fornecedores</button>
+      <button onclick="location.href='TabelaPedido.html'">Relatorios de Peças</button>
+     
+    </div>
+  </div>
+        
+    </div>
+  </div>
+</body>
+</html>
+
+

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cadastro de Fornecedor</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      position: relative;
+    }
+
+    .header {
+      background: linear-gradient(to right, #007BFF, #A4C2F4);
+      color: white;
+      text-align: center;
+      padding: 25px;
+      font-size: 28px;
+      font-weight: bold;
+      position: relative;
+    }
+
+    /* Botão voltar no canto superior esquerdo */
+    .home-button {
+      position: absolute;
+      top: 20px;
+      left: 30px;
+    }
+
+    .home-button a {
+      background-color: #007BFF;
+      padding: 10px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      box-shadow: 0 4px 10px rgba(0,123,255,0.2);
+      transition: background-color 0.3s;
+    }
+
+    .home-button a:hover {
+      background-color: #005dc1;
+    }
+
+    .form-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 30px 20px;
+      overflow-y: auto;
+    }
+
+    .form {
+      background-color: transparent;
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    label {
+      font-weight: 600;
+      color: #003B73;
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    textarea {
+      padding: 18px;
+      border: 1.5px solid #a4c2f4;
+      border-radius: 12px;
+      font-size: 16px;
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #d6e8ff;
+      transition: border-color 0.3s;
+      resize: vertical;
+      width: 100%;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="tel"]:focus,
+    textarea:focus {
+      border-color: #007BFF;
+      outline: none;
+      background-color: #c9ddff;
+    }
+
+    textarea {
+      min-height: 80px;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+      margin-top: 10px;
+    }
+
+    button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      padding: 16px 40px;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #005dc1;
+    }
+
+    .btn-cancel {
+      background-color: #ccc;
+      color: #444;
+    }
+
+    .btn-cancel:hover {
+      background-color: #999;
+      color: white;
+    }
+
+    @media (max-width: 600px) {
+      .form-container {
+        padding: 20px 10px;
+      }
+
+      .form {
+        max-width: 100%;
+      }
+
+      .header {
+        font-size: 22px;
+        padding: 20px;
+      }
+
+      .home-button {
+        left: 15px;
+      }
+    }
+  </style>
+
+  <script>
+    // Validação simples do formulário
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('formFornecedor');
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const dados = {
+          nome: form.nome.value.trim(),
+          cnpj: form.cnpj.value.trim(),
+          telefone: form.telefone.value.trim(),
+          email: form.email.value.trim(),
+          endereco: form.endereco.value.trim()
+        };
+        const cnpjRegex = /^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/;
+        if (!cnpjRegex.test(dados.cnpj)) {
+          alert('Digite um CNPJ válido no formato 00.000.000/0000-00');
+          form.cnpj.focus();
+          return;
+        }
+        alert('Fornecedor salvo com sucesso!\n\n' + JSON.stringify(dados, null, 2));
+        form.reset();
+      });
+    });
+  </script>
+</head>
+<body>
+
+  <div class="header">
+    CADASTRO DE FORNECEDOR
+
+    <!-- Botão voltar -->
+    <div class="home-button">
+      <a href="NavegaçãoTelas.html" title="Voltar para Navegação" aria-label="Voltar para Navegação">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24">
+          <path d="M15 18l-6-6 6-6" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+
+  </div>
+
+  <div class="form-container">
+    <form id="formFornecedor" class="form">
+      <div>
+        <label for="nome">Nome do Fornecedor:</label>
+        <input type="text" id="nome" name="nome" placeholder="Digite o nome completo" required />
+      </div>
+      <div>
+        <label for="cnpj">CNPJ:</label>
+        <input type="text" id="cnpj" name="cnpj" placeholder="00.000.000/0000-00" maxlength="18" required />
+      </div>
+      <div>
+        <label for="telefone">Telefone:</label>
+        <input type="tel" id="telefone" name="telefone" placeholder="(00) 00000-0000" maxlength="15" />
+      </div>
+      <div>
+        <label for="email">E-mail:</label>
+        <input type="email" id="email" name="email" placeholder="contato@fornecedor.com" />
+      </div>
+      <div>
+        <label for="endereco">Endereço:</label>
+        <textarea id="endereco" name="endereco" placeholder="Rua, número, bairro, cidade, estado"></textarea>
+      </div>
+      <div class="buttons">
+        <button type="reset" class="btn-cancel">Limpar</button>
+        <button type="submit">Salvar</button>
+      </div>
+    </form>
+  </div>
+
+</body>
+</html>

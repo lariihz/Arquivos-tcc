@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Deletar Peça</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      position: relative;
+    }
+
+    .header {
+      background: linear-gradient(to right, #007BFF, #A4C2F4);
+      color: white;
+      text-align: center;
+      padding: 25px;
+      font-size: 28px;
+      font-weight: bold;
+      position: relative;
+    }
+
+    /* Botão voltar - canto superior esquerdo */
+    .home-button {
+      position: absolute;
+      top: 20px;
+      left: 30px;
+    }
+
+    .home-button a {
+      background-color: #007BFF;
+      padding: 10px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      box-shadow: 0 4px 10px rgba(0,123,255,0.2);
+      transition: background-color 0.3s;
+    }
+
+    .home-button a:hover {
+      background-color: #005dc1;
+    }
+
+    /* Botão trocar tela - canto superior direito */
+    .nav-switch {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+    }
+
+    .nav-switch button {
+      background-color: #007BFF;
+      color: white;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 3px 8px rgba(0,123,255,0.3);
+    }
+
+    .nav-switch button:hover {
+      background-color: #005dc1;
+    }
+
+    .menu {
+      display: none;
+      position: absolute;
+      top: 45px;
+      right: 0;
+      background-color: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+      overflow: hidden;
+      z-index: 9999;
+    }
+
+    .menu a {
+      display: block;
+      padding: 10px 15px;
+      text-decoration: none;
+      color: #003B73;
+      font-weight: bold;
+      font-size: 14px;
+      transition: background-color 0.2s ease;
+    }
+
+    .menu a:hover {
+      background-color: #f0f0f0;
+    }
+
+    .form-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 30px;
+    }
+
+    .form {
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .form-group {
+      margin-bottom: 30px;
+    }
+
+    label {
+      display: block;
+      font-size: 20px;
+      margin-bottom: 10px;
+      font-weight: bold;
+      color: #003B73;
+    }
+
+    input {
+      width: 100%;
+      padding: 18px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: 1px solid #a4c2f4;
+      background-color: #d6e8ff;
+    }
+
+    input::placeholder {
+      color: #999;
+      font-style: arial;
+    }
+
+    .button-container {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .button-container button {
+      background-color: #ff4d4d;
+      color: white;
+      border: none;
+      padding: 16px 60px;
+      font-size: 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .button-container button:hover {
+      background-color: #cc0000;
+    }
+
+    @media (max-width: 768px) {
+      label {
+        font-size: 18px;
+      }
+
+      input {
+        font-size: 16px;
+        padding: 14px;
+      }
+
+      .button-container button {
+        padding: 14px 40px;
+        font-size: 16px;
+      }
+
+      .nav-switch {
+        right: 10px;
+      }
+
+      .home-button {
+        left: 10px;
+      }
+    }
+  </style>
+
+  <script>
+    function toggleMenu() {
+      const menu = document.getElementById('menu');
+      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    }
+
+    window.onclick = function(event) {
+      if (!event.target.matches('.nav-switch button')) {
+        const dropdowns = document.getElementsByClassName('menu');
+        for (let i = 0; i < dropdowns.length; i++) {
+          dropdowns[i].style.display = 'none';
+        }
+      }
+    };
+  </script>
+</head>
+<body>
+
+  <div class="header">
+    DELETAR PEÇA
+
+    <!-- Botão voltar -->
+    <div class="home-button">
+      <a href="NavegaçãoTelas.html" title="Voltar para Navegação">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="white" viewBox="0 0 24 24">
+          <path d="M15 18l-6-6 6-6" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+      </a>
+    </div>
+
+    <!-- Botão trocar tela -->
+    <div class="nav-switch">
+      <button onclick="toggleMenu()">Trocar para adicionar ▾</button>
+      <div class="menu" id="menu">
+        <a href="AddPeca.html">➡ Adicionar Peças</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-container">
+    <form class="form">
+      <div class="form-group">
+        <label for="tipo">TIPO DE PEÇA:</label>
+        <input type="text" id="tipo" name="tipo" placeholder="Digite o tipo da peça" />
+      </div>
+
+      <div class="form-group">
+        <label for="codigo">CÓDIGO:</label>
+        <input type="text" id="codigo" name="codigo" placeholder="Digite o código da peça" />
+      </div>
+
+      <div class="form-group">
+        <label for="descricao">DESCRIÇÃO:</label>
+        <input type="text" id="descricao" name="descricao" placeholder="Descreva a peça" />
+      </div>
+
+      <div class="button-container">
+        <button type="submit">DELETAR</button>
+      </div>
+    </form>
+  </div>
+
+</body>
+</html>
