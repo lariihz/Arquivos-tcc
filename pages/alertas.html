@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Alertas</title>
+  <div class="pagina">
+  <style>
+    :root {
+      --azul-vivo: #007bff;
+      --azul-claro: #a6c9ff;
+      --azul-escuro: #004c92;
+      --cinza-claro: #d0d0d0;
+      --preto: #1f1f1f;
+      --branco-acinzentado: #f4f4f4;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    .pagina {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--branco-acinzentado);
+      color: var(--preto);
+      padding: 30px;
+      border-radius: 12px;
+    }
+    .btn-voltar {
+      background-color: var(--azul-escuro);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 14px;
+      margin-bottom: 25px;
+      transition: background-color 0.3s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .btn-voltar:hover {
+      background-color: var(--azul-claro);
+      color: var(--preto);
+    }
+    h1, h2 {
+      color: var(--azul-vivo);
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+    form {
+      background-color: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      margin-bottom: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    select, input[type="text"], textarea {
+      flex: 1 1 200px;
+      padding: 10px;
+      border: 1px solid var(--cinza-claro);
+      border-radius: 8px;
+      font-size: 16px;
+      font-family: 'Poppins', sans-serif;
+      color: var(--preto);
+    }
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    button[type="submit"] {
+      background-color: var(--azul-vivo);
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      flex: 1 1 100px;
+      transition: background-color 0.3s;
+      align-self: flex-start;
+      min-width: 140px;
+    }
+    button[type="submit"]:hover {
+      background-color: var(--azul-escuro);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+    th, td {
+      padding: 12px 15px;
+      border-bottom: 1px solid var(--cinza-claro);
+      text-align: left;
+      font-weight: 400;
+    }
+    th {
+      background-color: var(--azul-claro);
+      font-weight: 600;
+      color: var(--preto);
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+  </style>
+
+  <button class="btn-voltar" onclick="window.location.href='index.html'">⬅ Voltar para o Início</button>
+  <h1>Gerar Alerta Manual</h1>
+
+  <form id="formAlerta">
+    <select id="pecaSelect" required></select>
+    <input type="text" id="tipo" placeholder="Tipo de alerta" required />
+    <textarea id="mensagem" placeholder="Mensagem do alerta" required></textarea>
+    <button type="submit">Criar Alerta</button>
+  </form>
+
+  <h2>Lista de Alertas</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Peça</th>
+        <th>Tipo</th>
+        <th>Mensagem</th>
+        <th>Data</th>
+      </tr>
+    </thead>
+    <tbody id="tabelaAlertas"></tbody>
+  </table>
+
+  <script>
+    const pecasUrl = 'http://localhost:8080/api/pecas';
+    const alertasUrl = 'http://localhost:8080/api/alertas';
+
+    async function carregarPecas() {
+      const resp = await fetch(pecasUrl);
+      const pecas = await resp.json();
+      const select = document.getElementById('pecaSelect');
+      select.innerHTML = '';
+      pecas.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = p.nome;
+        select.appendChild(opt);
+      });
+    }
+
+    async function carregarAlertas() {
+      const resp = await fetch(alertasUrl);
+      const alertas = await resp.json();
+      const tbody = document.getElementById('tabelaAlertas');
+      tbody.innerHTML = '';
+      alertas.forEach(a => {
+        const linha = document.createElement('tr');
+        linha.innerHTML = `
+          <td>${a.id}</td>
+          <td>${a.peca.nome}</td>
+          <td>${a.tipo}</td>
+          <td>${a.mensagem}</td>
+          <td>${new Date(a.dataHora).toLocaleString()}</td>
+        `;
+        tbody.appendChild(linha);
+      });
+    }
+
+    async function criarAlerta(event) {
+      event.preventDefault();
+      const pecaId = document.getElementById('pecaSelect').value;
+      const tipo = document.getElementById('tipo').value;
+      const mensagem = document.getElementById('mensagem').value;
+
+      await fetch(alertasUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pecaId, tipo, mensagem })
+      });
+
+      document.getElementById('formAlerta').reset();
+      carregarAlertas();
+    }
+
+    function voltarDashboard() {
+      if (window.parent && typeof window.parent.carregarPagina === 'function') {
+        window.parent.carregarPagina('dashboard');
+      } else {
+        window.location.href = 'index.html';
+      }
+    }
+
+    document.getElementById('formAlerta').addEventListener('submit', criarAlerta);
+    carregarPecas();
+    carregarAlertas();
+  </script>
+</div>

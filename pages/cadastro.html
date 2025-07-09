@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cadastro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --azul-vivo: #007bff;
+      --azul-claro: #a6c9ff;
+      --azul-escuro: #004c92;
+      --cinza-claro: #d0d0d0;
+      --preto: #1f1f1f;
+      --branco-acinzentado: #f4f4f4;
+      --branco: #ffffff;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--branco-acinzentado);
+      color: var(--preto);
+      margin: 60px auto;
+      max-width: 400px;
+      padding: 0 15px;
+    }
+    h1 {
+      margin-bottom: 30px;
+      text-align: center;
+      color: var(--azul-vivo);
+      font-weight: 600;
+    }
+    form {
+      background: var(--branco);
+      padding: 25px 20px;
+      border-radius: 10px;
+      /* sombra azul suave atrás */
+      box-shadow: 0 8px 20px rgba(0, 123, 255, 0.4);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    input, button {
+      padding: 12px;
+      border: 1px solid var(--cinza-claro);
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 15px;
+    }
+    button[type="submit"] {
+      background-color: var(--azul-vivo);
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      font-weight: 600;
+    }
+    button[type="submit"]:hover {
+      background-color: var(--azul-escuro);
+    }
+    p {
+      text-align: center;
+      margin-top: 20px;
+    }
+    a {
+      color: var(--azul-vivo);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Cadastre-se aqui !</h1>
+
+  <form id="formCadastro">
+    <input type="text" id="nome" placeholder="Nome" required />
+    <input type="email" id="email" placeholder="E-mail" required />
+    <input type="password" id="senha" placeholder="Senha" required />
+    <input type="date" id="dataNascimento" placeholder="Data de Nascimento" required />
+    <input type="tel" id="telefone" placeholder="Número de Telefone" required pattern="[\d\s()+-]{8,}" title="Digite um número válido" />
+    <button type="submit">Cadastrar</button>
+  </form>
+
+  <p>Já tem conta? <a href="login.html">Faça login</a></p>
+
+  <script>
+    document.getElementById('formCadastro').addEventListener('submit', async function(event) {
+      event.preventDefault();
+
+      const nome = document.getElementById('nome').value;
+      const email = document.getElementById('email').value;
+      const senha = document.getElementById('senha').value;
+      const dataNascimento = document.getElementById('dataNascimento').value;
+      const telefone = document.getElementById('telefone').value;
+
+      const resp = await fetch('http://localhost:8080/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, email, senha, dataNascimento, telefone })
+      });
+
+      if (resp.ok) {
+        alert('Cadastro realizado com sucesso!');
+        window.location.href = 'login.html';
+      } else {
+        alert('Erro ao cadastrar. Verifique os dados.');
+      }
+    });
+  </script>
+</body>
+</html>

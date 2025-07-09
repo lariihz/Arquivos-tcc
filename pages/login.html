@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR" >
+<head>
+  <meta charset="UTF-8" />
+  <title>Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --azul-vivo: #007bff;
+      --azul-escuro: #004c92;
+      --cinza-claro: #d0d0d0;
+      --preto: #1f1f1f;
+      --branco-acinzentado: #f4f4f4;
+      --branco: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--branco);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--preto);
+      padding: 20px;
+    }
+
+    .container {
+      background-color: var(--azul-vivo);
+      padding: 40px 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 24px var(--azul-escuro);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h1 {
+      text-align: center;
+      font-weight: 700;
+      font-size: 2.2rem;
+      margin-bottom: 30px;
+      color: var(--branco);
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    input {
+      padding: 14px 15px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+      font-weight: 400;
+      outline: none;
+      color: var(--preto);
+    }
+
+    input:focus {
+      box-shadow: 0 0 6px 2px var(--azul-escuro);
+    }
+
+    button {
+      padding: 15px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1.1rem;
+      font-weight: 700;
+      background-color: var(--branco);
+      color: var(--azul-vivo);
+      cursor: pointer;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    button:hover {
+      background-color: var(--cinza-claro);
+      color: var(--azul-escuro);
+    }
+
+    p {
+      text-align: center;
+      margin-top: 25px;
+      font-weight: 400;
+      color: var(--preto);
+    }
+
+    a {
+      color: var(--branco);
+      font-weight: 600;
+      text-decoration: underline;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    a:hover {
+      color: var(--cinza-claro);
+    }
+
+    /* Responsivo */
+    @media (max-width: 420px) {
+      .container {
+        padding: 30px 20px;
+      }
+      h1 {
+        font-size: 1.8rem;
+      }
+      button {
+        font-size: 1rem;
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Login - FundVerso</h1>
+    <form id="formLogin">
+      <input type="email" id="email" placeholder="E-mail" required />
+      <input type="password" id="senha" placeholder="Senha" required />
+      <button type="submit">Entrar</button>
+    </form>
+    <p>Não tem conta? <a href="cadastro.html">Cadastre-se</a></p>
+  </div>
+
+  <script>
+    document.getElementById('formLogin').addEventListener('submit', async function(event) {
+      event.preventDefault();
+
+      const email = document.getElementById('email').value;
+      const senha = document.getElementById('senha').value;
+
+      const resp = await fetch('http://localhost:8080/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, senha })
+      });
+
+      if (resp.ok) {
+        const data = await resp.json();
+        localStorage.setItem('token', data.token);
+        alert('Login realizado com sucesso!');
+        window.location.href = 'pecas.html'; // redireciona para a tela principal
+      } else {
+        alert('Email ou senha inválidos');
+      }
+    });
+  </script>
+</body>
+</html>

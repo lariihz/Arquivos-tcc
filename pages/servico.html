@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Serviços</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --azul-vivo: #007bff;
+      --azul-claro: #a6c9ff;
+      --azul-escuro: #004c92;
+      --cinza-claro: #d0d0d0;
+      --preto: #1f1f1f;
+      --branco-acinzentado: #f4f4f4;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    .pagina {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--branco-acinzentado);
+      color: var(--preto);
+      padding: 20px;
+      border-radius: 12px;
+    }
+    .btn-voltar {
+      background-color: var(--azul-vivo);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-bottom: 25px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: background-color 0.3s;
+    }
+    .btn-voltar:hover {
+      background-color: var(--azul-escuro);
+    }
+    h1, h2 {
+      color: var(--azul-vivo);
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+    form {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    select, input, button {
+      padding: 10px;
+      border: 1px solid var(--cinza-claro);
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 14px;
+    }
+    button[type="submit"] {
+      background-color: var(--azul-vivo);
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      min-width: 140px;
+    }
+    button[type="submit"]:hover {
+      background-color: var(--azul-escuro);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--cinza-claro);
+    }
+    th {
+      background-color: var(--azul-claro);
+      font-weight: 500;
+    }
+    @media (max-width: 600px) {
+      form {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="btn-voltar" onclick="window.location.href='index.html'">⬅ Voltar para o Início</button>
+
+  <h1>Registrar Serviço</h1>
+
+  <form id="formServico">
+    <select id="pecaSelect" required></select>
+    <input type="text" id="tipo" placeholder="Tipo de serviço" required />
+    <input type="text" id="tecnico" placeholder="Responsável/Técnico" required />
+    <textarea id="descricao" placeholder="Descrição do serviço" required></textarea>
+    <button type="submit">Registrar</button>
+  </form>
+
+  <h2>Lista de Serviços</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Peça</th>
+        <th>Tipo</th>
+        <th>Responsável</th>
+        <th>Descrição</th>
+        <th>Data</th>
+      </tr>
+    </thead>
+    <tbody id="tabelaServicos"></tbody>
+  </table>
+
+  <script>
+    const pecasUrl = 'http://localhost:8080/api/pecas';
+    const servicosUrl = 'http://localhost:8080/api/servicos';
+
+    async function carregarPecas() {
+      const resp = await fetch(pecasUrl);
+      const pecas = await resp.json();
+      const select = document.getElementById('pecaSelect');
+      select.innerHTML = '';
+      pecas.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = p.nome;
+        select.appendChild(opt);
+      });
+    }
+
+    async function carregarServicos() {
+      const resp = await fetch(servicosUrl);
+      const servicos = await resp.json();
+      const tbody = document.getElementById('tabelaServicos');
+      tbody.innerHTML = '';
+      servicos.forEach(s => {
+        const linha = document.createElement('tr');
+        linha.innerHTML = `
+          <td>${s.id}</td>
+          <td>${s.peca.nome}</td>
+          <td>${s.tipo}</td>
+          <td>${s.responsavel}</td>
+          <td>${s.descricao}</td>
+          <td>${new Date(s.dataHora).toLocaleString()}</td>
+        `;
+        tbody.appendChild(linha);
+      });
+    }
+
+    async function registrarServico(event) {
+      event.preventDefault();
+      const pecaId = document.getElementById('pecaSelect').value;
+      const tipo = document.getElementById('tipo').value;
+      const responsavel = document.getElementById('tecnico').value;
+      const descricao = document.getElementById('descricao').value;
+
+      await fetch(servicosUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pecaId, tipo, responsavel, descricao })
+      });
+
+      document.getElementById('formServico').reset();
+      carregarServicos();
+    }
+
+    document.getElementById('formServico').addEventListener('submit', registrarServico);
+    carregarPecas();
+    carregarServicos();
+  </script>
+</body>
+</html>

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Painel de Controle</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --azul-vivo: #007bff;
+      --azul-claro: #a6c9ff;
+      --azul-escuro: #004c92;
+      --cinza-claro: #d0d0d0;
+      --preto: #1f1f1f;
+      --branco-acinzentado: #f4f4f4;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      display: flex;
+      height: 100vh;
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--branco-acinzentado);
+      color: var(--preto);
+    }
+
+    nav {
+      width: 230px;
+      background-color: var(--azul-escuro);
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+    }
+
+    nav h2 {
+      font-size: 20px;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 30px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 10px 12px;
+      border-radius: 6px;
+      margin: 6px 0;
+      font-weight: 300;
+      transition: background-color 0.3s;
+    }
+
+    nav a:hover {
+      background-color: var(--azul-claro);
+      color: var(--preto);
+    }
+
+    main {
+      flex: 1;
+      padding: 30px;
+      background-color: white;
+      margin: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      overflow-y: auto;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 600;
+      color: var(--azul-vivo);
+      margin-bottom: 15px;
+    }
+
+    h2 {
+      font-size: 20px;
+      margin-top: 30px;
+      margin-bottom: 15px;
+      font-weight: 500;
+      color: var(--preto);
+    }
+
+    .dashboard-cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .card {
+      flex: 1;
+      min-width: 200px;
+      background-color: var(--azul-claro);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .card h3 {
+      font-size: 16px;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .card p {
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    canvas {
+      margin-top: 20px;
+      max-width: 100%;
+      background-color: var(--cinza-claro);
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    ul#listaAlertas {
+      margin-top: 10px;
+      padding: 15px;
+      background-color: var(--cinza-claro);
+      border-radius: 8px;
+    }
+
+    ul#listaAlertas li {
+      margin-bottom: 6px;
+      font-weight: 300;
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        flex-direction: row;
+        overflow-x: auto;
+        width: 100%;
+      }
+
+      nav h2 {
+        display: none;
+      }
+
+      nav a {
+        margin: 0 10px;
+        white-space: nowrap;
+      }
+
+      main {
+        margin: 10px;
+        padding: 20px;
+      }
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <nav>
+    <h2>Bem-vindo</h2>
+    <a href="#" onclick="carregarPagina('peca')">Peças</a>
+    <a href="#" onclick="carregarPagina('entradaPeca')">Entradas</a>
+    <a href="#" onclick="carregarPagina('saidaPeca')">Saídas</a>
+    <a href="#" onclick="carregarPagina('pedidos')">Pedidos</a>
+    <a href="#" onclick="carregarPagina('alertas')">Alertas</a>
+    <a href="#" onclick="carregarPagina('servico')">Serviços</a>
+    <a href="#" onclick="logout(); return false;">Sair</a>
+  </nav>
+
+  <main id="conteudo">
+    <h1>Sistema de Controle de Peças - FundVerso</h1>
+    <p>Selecione uma opção no menu.</p>
+
+    <h2>Dashboard</h2>
+
+    <div class="dashboard-cards">
+      <div class="card">
+        <h3>Total de Peças</h3>
+        <p id="totalPecas">Carregando...</p>
+      </div>
+      <div class="card">
+        <h3>Entradas no mês</h3>
+        <p id="totalEntradas">Carregando...</p>
+      </div>
+      <div class="card">
+        <h3>Saídas no mês</h3>
+        <p id="totalSaidas">Carregando...</p>
+      </div>
+    </div>
+
+    <h2>Movimentações da Semana</h2>
+    <canvas id="graficoMovimentacao" height="120"></canvas>
+
+    <h2>Alertas Recentes</h2>
+    <ul id="listaAlertas"></ul>
+  </main>
+
+  <script>
+    async function inicializarPagina() {
+      const token = localStorage.getItem('token');
+
+      const pecas = await fetch('http://localhost:8080/api/pecas', {
+        headers: { Authorization: 'Bearer ' + token }
+      }).then(r => r.json());
+      document.getElementById('totalPecas').textContent = pecas.length;
+
+      const entradas = await fetch('http://localhost:8080/api/entradas', {
+        headers: { Authorization: 'Bearer ' + token }
+      }).then(r => r.json());
+
+      const saidas = await fetch('http://localhost:8080/api/saidas', {
+        headers: { Authorization: 'Bearer ' + token }
+      }).then(r => r.json());
+
+      const hoje = new Date();
+      const mesAtual = hoje.getMonth();
+      const anoAtual = hoje.getFullYear();
+
+      const entradasMes = entradas.filter(e => new Date(e.dataHora).getMonth() === mesAtual && new Date(e.dataHora).getFullYear() === anoAtual);
+      const saidasMes = saidas.filter(s => new Date(s.dataHora).getMonth() === mesAtual && new Date(s.dataHora).getFullYear() === anoAtual);
+
+      document.getElementById('totalEntradas').textContent = entradasMes.length;
+      document.getElementById('totalSaidas').textContent = saidasMes.length;
+
+      const dias = [...Array(7)].map((_, i) => {
+        const d = new Date();
+        d.setDate(d.getDate() - (6 - i));
+        return d.toISOString().slice(0, 10);
+      });
+
+      const dataEntradas = dias.map(dia =>
+        entradas.filter(e => e.dataHora.startsWith(dia)).length
+      );
+
+      const dataSaidas = dias.map(dia =>
+        saidas.filter(s => s.dataHora.startsWith(dia)).length
+      );
+
+      new Chart(document.getElementById('graficoMovimentacao'), {
+        type: 'bar',
+        data: {
+          labels: dias,
+          datasets: [
+            { label: 'Entradas', data: dataEntradas, backgroundColor: 'green' },
+            { label: 'Saídas', data: dataSaidas, backgroundColor: 'red' }
+          ]
+        }
+      });
+
+      const alertas = await fetch('http://localhost:8080/api/alertas', {
+        headers: { Authorization: 'Bearer ' + token }
+      }).then(r => r.json());
+
+      const lista = document.getElementById('listaAlertas');
+      lista.innerHTML = '';
+      alertas.slice(0, 5).forEach(a => {
+        const li = document.createElement('li');
+        li.textContent = `${a.peca.nome}: ${a.tipo} - ${a.mensagem}`;
+        lista.appendChild(li);
+      });
+    }
+
+    function carregarPagina(pagina) {
+      fetch(`pages/${pagina}.html`)
+        .then(resp => resp.text())
+        .then(html => {
+          document.getElementById('conteudo').innerHTML = html;
+          if (typeof inicializarPagina === 'function') inicializarPagina();
+        })
+        .catch(() => {
+          document.getElementById('conteudo').innerHTML = '<p>Erro ao carregar página.</p>';
+        });
+    }
+
+    function logout() {
+      localStorage.removeItem('token');
+      window.location.href = 'login.html';
+    }
+
+    window.onload = inicializarPagina;
+  </script>
+</body>
+</html>

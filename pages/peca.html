@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cadastro de Peças</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --azul-vivo: #007bff;
+      --azul-claro: #a6c9ff;
+      --azul-escuro: #004c92;
+      --cinza-claro: #d0d0d0;
+      --preto: #1f1f1f;
+      --branco-acinzentado: #f4f4f4;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    .pagina {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--branco-acinzentado);
+      color: var(--preto);
+      padding: 30px;
+      border-radius: 10px;
+      max-width: 1200px;
+      margin: 20px auto;
+    }
+    .btn-voltar {
+      background-color: var(--azul-vivo);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-bottom: 25px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: background-color 0.3s;
+    }
+    .btn-voltar:hover {
+      background-color: var(--azul-escuro);
+    }
+    h1, h2 {
+      color: var(--azul-vivo);
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+    form {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    input, select, button {
+      padding: 10px;
+      border: 1px solid var(--cinza-claro);
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 14px;
+    }
+    button[type="submit"] {
+      background-color: var(--azul-vivo);
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      min-width: 140px;
+    }
+    button[type="submit"]:hover {
+      background-color: var(--azul-escuro);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--cinza-claro);
+    }
+    th {
+      background-color: var(--azul-claro);
+      font-weight: 500;
+    }
+    @media (max-width: 600px) {
+      form {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      button[type="submit"] {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="pagina">
+    <button class="btn-voltar" onclick="window.location.href='index.html'">⬅ Voltar para o Início</button>
+
+    <h1>Cadastro de Peças</h1>
+
+    <form id="formPeca">
+      <input type="text" id="nome" placeholder="Nome da Peça" required />
+      <input type="text" id="descricao" placeholder="Descrição" required />
+      <input type="number" id="quantidade" placeholder="Quantidade" required min="0" />
+      <button type="submit">Cadastrar</button>
+    </form>
+
+    <h2>Peças Cadastradas</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nome</th>
+          <th>Descrição</th>
+          <th>Quantidade</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="tabelaPecas"></tbody>
+    </table>
+
+    <script>
+      const apiUrl = 'http://localhost:8080/api/pecas';
+
+      async function carregarPecas() {
+        const resposta = await fetch(apiUrl);
+        const pecas = await resposta.json();
+
+        const tbody = document.getElementById('tabelaPecas');
+        tbody.innerHTML = '';
+
+        pecas.forEach(peca => {
+          const linha = document.createElement('tr');
+          linha.innerHTML = `
+            <td>${peca.id}</td>
+            <td>${peca.nome}</td>
+            <td>${peca.descricao}</td>
+            <td>${peca.quantidade}</td>
+            <td><button class="excluir" onclick="excluirPeca(${peca.id})">Excluir</button></td>
+          `;
+          tbody.appendChild(linha);
+        });
+      }
+
+      async function cadastrarPeca(event) {
+        event.preventDefault();
+
+        const nome = document.getElementById('nome').value;
+        const descricao = document.getElementById('descricao').value;
+        const quantidade = document.getElementById('quantidade').value;
+
+        await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nome, descricao, quantidade })
+        });
+
+        document.getElementById('formPeca').reset();
+        carregarPecas();
+      }
+
+      async function excluirPeca(id) {
+        if (confirm('Tem certeza que deseja excluir esta peça?')) {
+          await fetch(`${apiUrl}/${id}`, { method: 'DELETE' });
+          carregarPecas();
+        }
+      }
+
+      document.getElementById('formPeca').addEventListener('submit', cadastrarPeca);
+      carregarPecas();
+    </script>
+  </div>
+</body>
+</html>

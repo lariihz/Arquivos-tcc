@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Entradas de Peças</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --azul-vivo: #007bff;
+      --azul-claro: #a6c9ff;
+      --azul-escuro: #004c92;
+      --cinza-claro: #d0d0d0;
+      --preto: #1f1f1f;
+      --branco-acinzentado: #f4f4f4;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    .pagina {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--branco-acinzentado);
+      color: var(--preto);
+      padding: 20px;
+      border-radius: 12px;
+    }
+    .btn-voltar {
+      background-color: var(--azul-vivo);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-bottom: 25px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: background-color 0.3s;
+    }
+    .btn-voltar:hover {
+      background-color: var(--azul-escuro);
+    }
+    h1, h2 {
+      color: var(--azul-vivo);
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+    form {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    select, input, button {
+      padding: 10px;
+      border: 1px solid var(--cinza-claro);
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 14px;
+    }
+    button[type="submit"] {
+      background-color: var(--azul-vivo);
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      min-width: 140px;
+    }
+    button[type="submit"]:hover {
+      background-color: var(--azul-escuro);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--cinza-claro);
+    }
+    th {
+      background-color: var(--azul-claro);
+      font-weight: 500;
+    }
+    @media (max-width: 600px) {
+      form {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="pagina">
+    <button class="btn-voltar" onclick="window.location.href='index.html'">⬅ Voltar para o Início</button>
+
+    <h1>Registrar Entrada de Peça</h1>
+
+    <form id="formEntrada">
+      <select id="pecaSelect" required></select>
+      <input type="number" id="quantidadeEntrada" placeholder="Quantidade" required />
+      <button type="submit">Registrar Entrada</button>
+    </form>
+
+    <h2>Histórico de Entradas</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Peça</th>
+          <th>Quantidade</th>
+          <th>Data</th>
+        </tr>
+      </thead>
+      <tbody id="tabelaEntradas"></tbody>
+    </table>
+  </div>
+
+  <script>
+    const pecasUrl = 'http://localhost:8080/api/pecas';
+    const entradasUrl = 'http://localhost:8080/api/entradas';
+
+    async function carregarPecas() {
+      const resp = await fetch(pecasUrl);
+      const pecas = await resp.json();
+      const select = document.getElementById('pecaSelect');
+      select.innerHTML = '';
+      pecas.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = `${p.nome} - ${p.descricao}`;
+        select.appendChild(opt);
+      });
+    }
+
+    async function carregarEntradas() {
+      const resp = await fetch(entradasUrl);
+      const entradas = await resp.json();
+      const tbody = document.getElementById('tabelaEntradas');
+      tbody.innerHTML = '';
+      entradas.forEach(e => {
+        const linha = document.createElement('tr');
+        linha.innerHTML = `
+          <td>${e.id}</td>
+          <td>${e.peca.nome}</td>
+          <td>${e.quantidade}</td>
+          <td>${new Date(e.dataHora).toLocaleString()}</td>
+        `;
+        tbody.appendChild(linha);
+      });
+    }
+
+    async function registrarEntrada(event) {
+      event.preventDefault();
+      const pecaId = document.getElementById('pecaSelect').value;
+      const quantidade = document.getElementById('quantidadeEntrada').value;
+
+      await fetch(entradasUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pecaId, quantidade })
+      });
+
+      document.getElementById('formEntrada').reset();
+      carregarEntradas();
+    }
+
+    document.getElementById('formEntrada').addEventListener('submit', registrarEntrada);
+
+    carregarPecas();
+    carregarEntradas();
+  </script>
+</body>
+</html>
